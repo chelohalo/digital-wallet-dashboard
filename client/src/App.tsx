@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import Wallet from "./components/Wallet";
 import { isValidEthereumAddress } from "./utils/address";
+import { CircularProgress } from "@mui/joy";
 
 interface IWallet {
   address: string;
@@ -22,13 +23,17 @@ function App() {
   const [address, setAddress] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
     setOpen(true);
   };
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -51,10 +56,12 @@ function App() {
   }, []);
 
   const handleAddAddressClick = async () => {
-    handleClick()
+    setIsLoading(true);
+    handleClick();
     if (!isValidEthereumAddress(address)) {
       setToastMessage("Invalid address");
       setAddress("");
+      setIsLoading(false);
       return;
     }
 
@@ -66,14 +73,20 @@ function App() {
       body: JSON.stringify({ address }),
     });
     const data = await res.json();
-    setToastMessage("Address added");
     setWallets([data, ...wallets]);
     setAddress("");
+    setIsLoading(false);
+    setToastMessage("Address added");
   };
 
   return (
     <>
-      <Snackbar autoHideDuration={6000} message={toastMessage} open={open} onClose={handleClose}>
+      <Snackbar
+        autoHideDuration={3000}
+        message={toastMessage}
+        open={open}
+        onClose={handleClose}
+      >
         <Alert
           severity={toastMessage === "Invalid address" ? "error" : "success"}
         >
@@ -95,25 +108,34 @@ function App() {
           variant="outlined"
           label="Address"
           size="small"
-          sx={{ mr: "10px" }}
+          sx={{ mr: "10px", width: "430px" }}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
         <Button variant="contained" onClick={handleAddAddressClick}>
           Add
         </Button>
+        {isLoading && <CircularProgress />}
       </Box>
-
-      {wallets.map((wallet: IWallet) => (
-        <Wallet
-          key={wallet.address}
-          address={wallet.address}
-          isFavourite={wallet.isFavourite}
-          isOld={wallet.isOld}
-          balance={wallet.balance}
-          rates={rates}
-        />
-      ))}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {wallets.map((wallet: IWallet) => (
+          <Wallet
+            key={wallet.address}
+            address={wallet.address}
+            isFavourite={wallet.isFavourite}
+            isOld={wallet.isOld}
+            balance={wallet.balance}
+            rates={rates}
+          />
+        ))}
+      </Box>
     </>
   );
 }

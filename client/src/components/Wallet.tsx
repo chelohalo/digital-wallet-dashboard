@@ -32,15 +32,13 @@ export default function Wallet({
     address: string,
     isFavouriteValue: boolean
   ) => {
-    const res = await fetch(`http://localhost:3000/address/`, {
+    await fetch(`http://localhost:3000/address/`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({ isFavourite: isFavouriteValue, address }),
     });
-    const data = await res.json();
-    // console.log(data);
   };
 
   const handleSelectChange = (e: any) => {
@@ -56,9 +54,10 @@ export default function Wallet({
   return (
     <Box
       sx={{
+        marginBottom: "20px",
         width: "80%",
         height: "300px",
-        backgroundColor: "background.default",
+        backgroundColor: "#c8c8c8",
         boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
         borderRadius: "20px",
         display: "flex",
@@ -97,7 +96,7 @@ export default function Wallet({
         <Box
           sx={{
             height: "80px",
-            backgroundColor: "warning.main",
+            backgroundColor: "#f48fb1",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -111,6 +110,7 @@ export default function Wallet({
           flexGrow: 1,
           display: "flex",
           flexDirection: "column",
+          padding: "20px",
         }}
       >
         <Box
@@ -119,25 +119,28 @@ export default function Wallet({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "background.paper",
-            justifyItems: "right",
+            // backgroundColor: "grey",
+            marginBottom: "20px",
           }}
         >
           <Typography variant="h4">Ether {balance.toFixed(2)}</Typography>
         </Box>
         <Box
           sx={{
-            width: "50%",
-            flexGrow: 1,
             display: "flex",
+            flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "background.paper",
+            justifyContent: "space-evenly",
+            // backgroundColor: "primary.light",
+            padding: "10px",
+            borderRadius: "10px",
           }}
         >
-            <FormControl fullWidth>
+          <Box sx={{ minWidth: 120 }}>
+            <FormControl>
               <InputLabel id="demo-simple-select-label">Currency</InputLabel>
               <Select
+                style={{ width: "300px" }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={currency}
@@ -148,31 +151,13 @@ export default function Wallet({
                 <MenuItem value="EUR">Euro</MenuItem>
               </Select>
             </FormControl>
-              <Box 
-              sx={{
-                width: "50%",
-                flexGrow: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "background.paper",
-              }}>
-                {currency === "USD" ? (
-                  <Typography variant="h6">USD {guitaUSD}</Typography>
-                ) : (
-                  <Typography variant="h6">EUR {guitaEUR}</Typography>
-                )}
           </Box>
-        </Box>
-        <Box
-          sx={{
-            height: "60px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-evenly",
-            backgroundColor: "primary.light",
-          }}
-        >
+
+          {currency === "USD" ? (
+            <Typography variant="h6">USD {guitaUSD}</Typography>
+          ) : (
+            <Typography variant="h6">EUR {guitaEUR}</Typography>
+          )}
         </Box>
       </Box>
     </Box>
