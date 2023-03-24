@@ -29,10 +29,7 @@ export class ExchangeRateController {
 
   //update ExchangeRate rate by passing name and rate
   @Put()
-  async updateExchangeRate(
-    @Body() body: { name: string; rate: number },
-  ): Promise<ExchangeRate> {
-    const { name, rate } = body;
-    return this.exchangeRateService.updateExchangeRate(name, rate);
+  async updateExchangeRate(): Promise<ExchangeRate> {
+    return this.exchangeRateService.updateETHUSDExchangeRate();
   }
 }

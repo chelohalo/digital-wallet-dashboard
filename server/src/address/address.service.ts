@@ -12,10 +12,10 @@ export class AddressService {
   async createAddress(address: string): Promise<Address> {
     try {
       const { data } = await axios.get(
-        `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=NSZCD6S4TKVWRS13PMQFMVTNP6H7NAGHUY`,
+        `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.ETHERSCAN_API_KEY}`,
       );
       const response = await axios.get(
-        `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=NSZCD6S4TKVWRS13PMQFMVTNP6H7NAGHUY`,
+        `https://api.etherscan.io/api?module=account&action=balance&address=${address}&tag=latest&apikey=${process.env.ETHERSCAN_API_KEY}`,
       );
       const balance = parseInt(response.data.result) / 1000000000000000000;
       const timeStamp = hexTimestampToDate(data.result[0].timeStamp);

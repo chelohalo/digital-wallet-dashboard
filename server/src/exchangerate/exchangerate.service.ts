@@ -24,24 +24,13 @@ export class ExchangeRateService {
     });
   }
 
-  async updateExchangeRate(name: string, rate: number): Promise<ExchangeRate> {
-    if (name !== 'EURUSD' && name !== 'ETHUSD') {
-      throw new Error('the name should be EURUSD or ETHUSD');
-    }
-    if (name == 'EURUSD') {
-      return this.prisma.exchangeRate.update({
-        where: { name },
-        data: { rate },
-      });
-    }
-    if (name == 'ETHUSD') {
-      const { data } = await axios.get(
-        `https://api.etherscan.io/api?module=stats&action=ethprice&apikey=NSZCD6S4TKVWRS13PMQFMVTNP6H7NAGHUY`,
-      );
-      return this.prisma.exchangeRate.update({
-        where: { name },
-        data: { rate: Number(data.result.ethusd) },
-      });
-    }
+  async updateETHUSDExchangeRate(): Promise<ExchangeRate> {
+    const { data } = await axios.get(
+      `https://api.etherscan.io/api?module=stats&action=ethprice&apikey=${process.env.ETHERSCAN_API_KEY}`,
+    );
+    return this.prisma.exchangeRate.update({
+      where: { name: 'ETHUSD' },
+      data: { rate: Number(data.result.ethusd) },
+    });
   }
 }
