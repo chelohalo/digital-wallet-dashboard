@@ -25,18 +25,11 @@ function App() {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleClick = () => {
+  const showToast = () => {
     setOpen(true);
   };
 
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -56,8 +49,14 @@ function App() {
   }, []);
 
   const handleAddAddressClick = async () => {
+    const walletFound = wallets.find((wallet) => wallet.address === address);
+    if (walletFound) {
+      setToastMessage("Wallet already exists");
+      showToast();
+      return;
+    }
+
     setIsLoading(true);
-    handleClick();
     if (!isValidEthereumAddress(address)) {
       setToastMessage("Invalid address");
       setAddress("");
@@ -72,11 +71,13 @@ function App() {
       },
       body: JSON.stringify({ address }),
     });
+
     const data = await res.json();
     setWallets([data, ...wallets]);
     setAddress("");
     setIsLoading(false);
     setToastMessage("Address added");
+    showToast();
   };
 
   return (
@@ -88,7 +89,12 @@ function App() {
         onClose={handleClose}
       >
         <Alert
-          severity={toastMessage === "Invalid address" ? "error" : "success"}
+          severity={
+            toastMessage === "Invalid address" ||
+            toastMessage === "Wallet already exists"
+              ? "error"
+              : "success"
+          }
         >
           {toastMessage}
         </Alert>
@@ -112,7 +118,11 @@ function App() {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
-        <Button variant="contained" onClick={handleAddAddressClick}>
+        <Button
+          variant="contained"
+          onClick={handleAddAddressClick}
+          style={{ marginRight: "15px" }}
+        >
           Add
         </Button>
         {isLoading && <CircularProgress />}
