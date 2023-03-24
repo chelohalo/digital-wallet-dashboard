@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Address {
+  id        Int      @id @default(autoincrement())
+  address   String   @db.VarChar(255) @unique
+  isFavourite Boolean @default(false)
+  isOld     Boolean @default(false)
+  balance   Float @default(0.0)
+}
+
+model ExchangeRate {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255) @unique
+  rate      Float    @default(0.0)
+}
