@@ -19,7 +19,7 @@ export interface IRate {
 
 function App() {
   const [wallets, setWallets] = useState<IWallet[]>([]);
-  const [rates, setRates] = useState<IRate[]>([]);
+  const [rates, setRates] = useState<number[]>([]);
   const [address, setAddress] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [open, setOpen] = useState(false);
@@ -39,12 +39,25 @@ function App() {
       const data = await res.json();
       setWallets(data);
     };
-    const getAllRates = async () => {
-      const res = await fetch(`http://localhost:3000/exchangerate/`);
+    // const getAllRates = async () => {
+    //   const res = await fetch(`http://localhost:3000/exchangerate/`);
+    //   const data = await res.json();
+    //   setRates(data);
+    // };
+    const populateRates = async (): Promise<void> => {
+      // fetch with post method
+      const res = await fetch(`http://localhost:3000/exchangerate/populate`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
       const data = await res.json();
-      setRates(data);
+
+      setRates([data.rates.EURUSD, data.rates.ETHUSD]);
     };
-    getAllRates();
+    populateRates();
+    console.log("debug aqui llegó");
     fetchWallets();
   }, []);
 
@@ -135,16 +148,17 @@ function App() {
           justifyContent: "center",
         }}
       >
-        {wallets.map((wallet: IWallet) => (
-          <Wallet
-            key={wallet.address}
-            address={wallet.address}
-            isFavourite={wallet.isFavourite}
-            isOld={wallet.isOld}
-            balance={wallet.balance}
-            rates={rates}
-          />
-        ))}
+        {rates.length !== 0 &&
+          wallets.map((wallet: IWallet) => (
+            <Wallet
+              key={wallet.address}
+              address={wallet.address}
+              isFavourite={wallet.isFavourite}
+              isOld={wallet.isOld}
+              balance={wallet.balance}
+              rates={rates}
+            />
+          ))}
       </Box>
     </>
   );

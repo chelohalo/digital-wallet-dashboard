@@ -8,15 +8,14 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Star, StarBorder } from "@mui/icons-material";
-import { useState } from "react";
-import { IRate } from "../App";
+import { useEffect, useState } from "react";
 
 type WalletProps = {
   address: string;
   isFavourite: boolean;
   isOld: boolean;
   balance: number;
-  rates: IRate[];
+  rates: number[];
 };
 
 export default function Wallet({
@@ -28,6 +27,13 @@ export default function Wallet({
 }: WalletProps) {
   const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
   const [currency, setCurrency] = useState("USD");
+  const [amounts, setAmounts] = useState<{
+    USD: string;
+    EUR: string;
+  }>({
+    USD: "",
+    EUR: "",
+  });
   const updateFavourite = async (
     address: string,
     isFavouriteValue: boolean
@@ -48,8 +54,38 @@ export default function Wallet({
       setCurrency("EUR");
     }
   };
-  const guitaUSD = Number((rates[1].rate * balance).toFixed(2));
-  const guitaEUR = Number((Number(guitaUSD) / rates[0].rate).toFixed(2));
+
+  useEffect(() => {
+    if (rates.length !== 0) {
+      setAmounts({
+        USD: (rates[1] * balance).toFixed(2),
+        EUR: (Number(amounts.USD) / rates[0]).toFixed(2),
+      });
+    }
+  }, [rates, balance, amounts.USD]);
+
+
+  // const guitaUSD =
+  //   rates.length === 0 ? "" : (rates[1].rate * balance).toFixed(2);
+  // const guitaEUR =
+  //   rates.length === 0 ? "" : (Number(guitaUSD) / rates[0].rate).toFixed(2);
+
+  // useEffect(() => {
+  // console.log({
+  //   guitaUSD,
+  //   guitaEUR,
+  //   USD: rates[1].rate,
+  //   EUR: rates[0].rate,
+  //   balance,
+  // });
+  // setAmounts({
+  //   USD: rates.length === 0 ? "" : (rates[1]?.rate * balance)?.toFixed(2),
+  //   EUR:
+  //     rates.length === 0
+  //       ? ""
+  //       : (Number(guitaUSD) / rates[0]?.rate)?.toFixed(2),
+  // });
+  // }, [rates, balance, guitaEUR, guitaUSD]);
 
   return (
     <Box
@@ -154,9 +190,9 @@ export default function Wallet({
           </Box>
 
           {currency === "USD" ? (
-            <Typography variant="h6">USD {guitaUSD}</Typography>
+            <Typography variant="h6">USD {amounts.USD}</Typography>
           ) : (
-            <Typography variant="h6">EUR {guitaEUR}</Typography>
+            <Typography variant="h6">EUR {amounts.EUR}</Typography>
           )}
         </Box>
       </Box>
