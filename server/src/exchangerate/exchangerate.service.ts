@@ -7,7 +7,11 @@ import axios from 'axios';
 export class ExchangeRateService {
   private readonly logger = new Logger(ExchangeRateService.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {
+    this.populateExchangeRatesOnStartup().catch((err) => {
+      this.logger.error(err);
+    });
+  }
 
   async getAllExchangeRates(): Promise<ExchangeRate[]> {
     return this.prisma.exchangeRate.findMany();
@@ -33,47 +37,22 @@ export class ExchangeRateService {
       data: { rate: Number(data.result.ethusd) },
     });
   }
-  async populateExchangeRates(): Promise<{
-    success: true;
-    message: string;
-    rates: { EURUSD: number; ETHUSD: number };
-  }> {
-    try {
+  private async populateExchangeRatesOnStartup(): Promise<void> {
+    const ratesExist = await this.prisma.exchangeRate.findMany();
+    if (ratesExist.length === 0) {
       const { data } = await axios.get(
         `https://api.etherscan.io/api?module=stats&action=ethprice&apikey=${process.env.ETHERSCAN_API_KEY}`,
       );
       const ethusd = Number(data.result.ethusd);
-      this.logger.log(`ethusd: ${ethusd}`);
-      const ratesExist = await this.prisma.exchangeRate.findMany();
-      this.logger.log(
-        `ratesExist: ${ratesExist}\n rateExist.length: ${ratesExist.length}`,
-      );
-      // if si no existen las rates, las crea
-      if (ratesExist.length === 0) {
-        this.logger.log('entro aca');
-        await this.prisma.exchangeRate.createMany({
-          data: [
-            { name: 'EURUSD', rate: 1.08 },
-            { name: 'ETHUSD', rate: ethusd },
-          ],
-        });
-        const rates = await this.prisma.exchangeRate.findMany();
-        this.logger.log(`rates: ${rates}`);
-        return {
-          success: true,
-          message: 'Exchange rates populated',
-          rates: { EURUSD: rates[0].rate, ETHUSD: rates[1].rate },
-        };
-      }
-
-      return {
-        success: true,
-        message: 'Exchange rates already exist',
-        rates: { EURUSD: ratesExist[0].rate, ETHUSD: ratesExist[1].rate },
-      };
-    } catch (error) {
-      this.logger.error(error);
-      // throw new Error(error);
+      await this.prisma.exchangeRate.createMany({
+        data: [
+          { name: 'EURUSD', rate: 1.08 },
+          { name: 'ETHUSD', rate: ethusd },
+        ],
+      });
+      this.logger.log('Exchange rates populated on startup');
+    } else {
+      this.logger.log('Exchange rates already exist on startup');
     }
   }
 }

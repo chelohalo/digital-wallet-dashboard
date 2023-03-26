@@ -8,14 +8,15 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Star, StarBorder } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { IRate } from "../App";
 
 type WalletProps = {
   address: string;
   isFavourite: boolean;
   isOld: boolean;
   balance: number;
-  rates: number[];
+  rates: IRate[] | [];
 };
 
 export default function Wallet({
@@ -27,13 +28,7 @@ export default function Wallet({
 }: WalletProps) {
   const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
   const [currency, setCurrency] = useState("USD");
-  const [amounts, setAmounts] = useState<{
-    USD: string;
-    EUR: string;
-  }>({
-    USD: "",
-    EUR: "",
-  });
+  
   const updateFavourite = async (
     address: string,
     isFavouriteValue: boolean
@@ -55,37 +50,9 @@ export default function Wallet({
     }
   };
 
-  useEffect(() => {
-    if (rates.length !== 0) {
-      setAmounts({
-        USD: (rates[1] * balance).toFixed(2),
-        EUR: (Number(amounts.USD) / rates[0]).toFixed(2),
-      });
-    }
-  }, [rates, balance, amounts.USD]);
 
-
-  // const guitaUSD =
-  //   rates.length === 0 ? "" : (rates[1].rate * balance).toFixed(2);
-  // const guitaEUR =
-  //   rates.length === 0 ? "" : (Number(guitaUSD) / rates[0].rate).toFixed(2);
-
-  // useEffect(() => {
-  // console.log({
-  //   guitaUSD,
-  //   guitaEUR,
-  //   USD: rates[1].rate,
-  //   EUR: rates[0].rate,
-  //   balance,
-  // });
-  // setAmounts({
-  //   USD: rates.length === 0 ? "" : (rates[1]?.rate * balance)?.toFixed(2),
-  //   EUR:
-  //     rates.length === 0
-  //       ? ""
-  //       : (Number(guitaUSD) / rates[0]?.rate)?.toFixed(2),
-  // });
-  // }, [rates, balance, guitaEUR, guitaUSD]);
+  const balanceUSD = rates.length === 0 ? "Missing rate to calculte balance" : (rates[1].rate * balance).toFixed(2);
+  const balanceEUR = rates.length === 0 ? "Missing rate to calculte balance" : (Number(balanceUSD) / rates[0].rate).toFixed(2);
 
   return (
     <Box
@@ -155,7 +122,6 @@ export default function Wallet({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            // backgroundColor: "grey",
             marginBottom: "20px",
           }}
         >
@@ -167,7 +133,6 @@ export default function Wallet({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-evenly",
-            // backgroundColor: "primary.light",
             padding: "10px",
             borderRadius: "10px",
           }}
@@ -190,9 +155,9 @@ export default function Wallet({
           </Box>
 
           {currency === "USD" ? (
-            <Typography variant="h6">USD {amounts.USD}</Typography>
+            <Typography variant="h6">USD {balanceUSD}</Typography>
           ) : (
-            <Typography variant="h6">EUR {amounts.EUR}</Typography>
+            <Typography variant="h6">EUR {balanceEUR}</Typography>
           )}
         </Box>
       </Box>

@@ -27,18 +27,18 @@ export class ExchangeRateController {
     return this.exchangeRateService.createExchangeRate(name, rate);
   }
 
-  @Post('populate')
-  async populateExchangeRates(): Promise<{
-    success: boolean;
-    message: string;
-    rates: { EURUSD: number; ETHUSD: number };
-  }> {
-    const exchangeRates =
-      await this.exchangeRateService.populateExchangeRates();
-    if (exchangeRates) {
-      return exchangeRates;
-    }
-  }
+  // @Post('populate')
+  // async populateExchangeRates(): Promise<{
+  //   success: boolean;
+  //   message: string;
+  //   rates: { EURUSD: number; ETHUSD: number };
+  // }> {
+  //   const exchangeRates =
+  //     await this.exchangeRateService.populateExchangeRatesOnStartup();
+  //   if (exchangeRates) {
+  //     return exchangeRates;
+  //   }
+  // }
 
   //update ExchangeRate rate by passing name and rate
   @Put()

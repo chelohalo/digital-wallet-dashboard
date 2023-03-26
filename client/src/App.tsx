@@ -19,7 +19,7 @@ export interface IRate {
 
 function App() {
   const [wallets, setWallets] = useState<IWallet[]>([]);
-  const [rates, setRates] = useState<number[]>([]);
+  const [rates, setRates] = useState<IRate[]>([]);
   const [address, setAddress] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [open, setOpen] = useState(false);
@@ -39,25 +39,12 @@ function App() {
       const data = await res.json();
       setWallets(data);
     };
-    // const getAllRates = async () => {
-    //   const res = await fetch(`http://localhost:3000/exchangerate/`);
-    //   const data = await res.json();
-    //   setRates(data);
-    // };
-    const populateRates = async (): Promise<void> => {
-      // fetch with post method
-      const res = await fetch(`http://localhost:3000/exchangerate/populate`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
+    const getAllRates = async () => {
+      const res = await fetch(`http://localhost:3000/exchangerate/`);
       const data = await res.json();
-
-      setRates([data.rates.EURUSD, data.rates.ETHUSD]);
+      setRates(data);
     };
-    populateRates();
-    console.log("debug aqui llegó");
+    getAllRates();
     fetchWallets();
   }, []);
 
@@ -148,7 +135,7 @@ function App() {
           justifyContent: "center",
         }}
       >
-        {rates.length !== 0 &&
+        {
           wallets.map((wallet: IWallet) => (
             <Wallet
               key={wallet.address}
