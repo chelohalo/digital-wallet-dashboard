@@ -16,7 +16,7 @@ type WalletProps = {
   isFavourite: boolean;
   isOld: boolean;
   balance: number;
-  rates: IRate[] | [];
+  rates: IRate;
 };
 
 export default function Wallet({
@@ -28,7 +28,7 @@ export default function Wallet({
 }: WalletProps) {
   const [isFavouriteState, setIsFavouriteState] = useState(isFavourite);
   const [currency, setCurrency] = useState("USD");
-  
+
   const updateFavourite = async (
     address: string,
     isFavouriteValue: boolean
@@ -50,9 +50,12 @@ export default function Wallet({
     }
   };
 
-
-  const balanceUSD = rates.length === 0 ? "Missing rate to calculte balance" : (rates[1].rate * balance).toFixed(2);
-  const balanceEUR = rates.length === 0 ? "Missing rate to calculte balance" : (Number(balanceUSD) / rates[0].rate).toFixed(2);
+  const balanceUSD = rates["ETHUSD"]
+    ? (rates["ETHUSD"] * balance).toFixed(2)
+    : "Missing rate to calculte balance";
+  const balanceEUR = rates["EURUSD"]
+    ? (Number(balanceUSD) / rates["EURUSD"]).toFixed(2)
+    : "Missing rate to calculte balance";
 
   return (
     <Box

@@ -2,6 +2,10 @@ import { Body, Controller, Post, Get, Put, Param } from '@nestjs/common';
 import { ExchangeRateService } from './exchangerate.service';
 import { ExchangeRate } from '@prisma/client';
 
+interface IExchangeRate {
+  [key: string]: number;
+}
+
 @Controller('exchangerate')
 export class ExchangeRateController {
   constructor(private exchangeRateService: ExchangeRateService) {}
@@ -14,8 +18,13 @@ export class ExchangeRateController {
   }
 
   @Get()
-  async getAllExchangeRates(): Promise<ExchangeRate[]> {
-    return this.exchangeRateService.getAllExchangeRates();
+  async getAllExchangeRates(): Promise<IExchangeRate> {
+    const exchangeRates = await this.exchangeRateService.getAllExchangeRates();
+    const exchangeRatesResponse = {};
+    exchangeRates.forEach((rate) => {
+      exchangeRatesResponse[rate.name] = rate.rate;
+    });
+    return exchangeRatesResponse;
   }
 
   //create ExchangeRate and set isFavourite to false

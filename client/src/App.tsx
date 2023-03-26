@@ -13,13 +13,12 @@ interface IWallet {
   rates: IRate[];
 }
 export interface IRate {
-  name: string;
-  rate: number;
+  [key: string]: number;
 }
 
 function App() {
   const [wallets, setWallets] = useState<IWallet[]>([]);
-  const [rates, setRates] = useState<IRate[]>([]);
+  const [rates, setRates] = useState<IRate>({});
   const [address, setAddress] = useState("");
   const [toastMessage, setToastMessage] = useState("");
   const [open, setOpen] = useState(false);
@@ -135,17 +134,16 @@ function App() {
           justifyContent: "center",
         }}
       >
-        {
-          wallets.map((wallet: IWallet) => (
-            <Wallet
-              key={wallet.address}
-              address={wallet.address}
-              isFavourite={wallet.isFavourite}
-              isOld={wallet.isOld}
-              balance={wallet.balance}
-              rates={rates}
-            />
-          ))}
+        {wallets.map((wallet: IWallet) => (
+          <Wallet
+            key={wallet.address}
+            address={wallet.address}
+            isFavourite={wallet.isFavourite}
+            isOld={wallet.isOld}
+            balance={wallet.balance}
+            rates={rates}
+          />
+        ))}
       </Box>
     </>
   );
