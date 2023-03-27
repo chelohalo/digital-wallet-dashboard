@@ -95,6 +95,7 @@ function App() {
     setIsLoading(true);
     if (!isValidEthereumAddress(address)) {
       setToastMessage("Invalid address");
+      showToast();
       setAddress("");
       setIsLoading(false);
       return;
@@ -126,8 +127,8 @@ function App() {
       >
         <Alert
           severity={
-            toastMessage === "Invalid address" ||
-            toastMessage === "Wallet already exists"
+            (toastMessage === "Invalid address" ||
+            toastMessage === "Wallet already exists")
               ? "error"
               : "success"
           }
