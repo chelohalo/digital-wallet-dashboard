@@ -22,9 +22,6 @@ export class AddressService {
       // is timeStamp older than 1 year
       const isOld =
         new Date(timeStamp).getTime() < new Date().getTime() - 31556952000;
-      this.logger.log(`timeStamp: ${new Date(timeStamp).toUTCString()}`);
-      this.logger.log(`isOld: ${isOld}`);
-      this.logger.log(`balance: ${typeof balance}`);
       return this.prisma.address.create({
         data: {
           address,

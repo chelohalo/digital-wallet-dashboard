@@ -1,4 +1,11 @@
-import { Alert, Button, Snackbar, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  FormControlLabel,
+  Snackbar,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import Wallet from "./components/Wallet";
@@ -11,6 +18,7 @@ interface IWallet {
   balance: number;
   isFavourite: boolean;
   rates: IRate[];
+  createdAt: Date;
 }
 export interface IRate {
   [key: string]: number;
@@ -31,6 +39,35 @@ function App() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleFavouriteToggle = async (e: any) => {
+    const isSortOn: boolean = e.target.checked;
+    const sortedWallets = [...wallets];
+    if (isSortOn) {
+      sortedWallets.sort((a, b) => {
+        if (a.isFavourite && !b.isFavourite) {
+          return -1;
+        } else if (!a.isFavourite && b.isFavourite) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    } else {
+      sortedWallets.sort((a, b) => {
+        if (new Date(a.createdAt) > new Date(b.createdAt)) {
+          return -1;
+        } else if (new Date(a.createdAt)< new Date(b.createdAt)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    }
+    setWallets(sortedWallets);
+  };
+
+
 
   useEffect(() => {
     const fetchWallets = async () => {
@@ -124,6 +161,10 @@ function App() {
         >
           Add
         </Button>
+        <FormControlLabel
+          control={<Switch onChange={handleFavouriteToggle} />}
+          label="Order by favourite"
+        />
         {isLoading && <CircularProgress />}
       </Box>
       <Box

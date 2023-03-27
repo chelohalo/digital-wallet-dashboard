@@ -13,6 +13,7 @@ model Address {
   isFavourite Boolean @default(false)
   isOld     Boolean @default(false)
   balance   Float @default(0.0)
+  createdAt DateTime @default(now())
 }
 
 model ExchangeRate {

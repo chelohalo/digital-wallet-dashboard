@@ -61,8 +61,8 @@ export default function Wallet({
     <Box
       sx={{
         marginBottom: "20px",
-        width: "80%",
-        height: "300px",
+        width: "50%",
+        height: "200px",
         backgroundColor: "#c8c8c8",
         boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
         borderRadius: "20px",
@@ -77,15 +77,15 @@ export default function Wallet({
     >
       <Box
         sx={{
-          padding: "20px",
           display: "flex",
+          paddingLeft: "30px",
           justifyContent: "space-between",
           alignItems: "center",
           backgroundColor: "primary.main",
           color: "primary.contrastText",
         }}
       >
-        <Typography variant="h6">{address}</Typography>
+        <Typography variant="subtitle1">{address}</Typography>
         <IconButton
           sx={{ color: "inherit" }}
           aria-label="toggle favourite"
@@ -116,7 +116,6 @@ export default function Wallet({
           flexGrow: 1,
           display: "flex",
           flexDirection: "column",
-          padding: "20px",
         }}
       >
         <Box
@@ -128,7 +127,7 @@ export default function Wallet({
             marginBottom: "20px",
           }}
         >
-          <Typography variant="h4">Ether {balance.toFixed(2)}</Typography>
+          <Typography variant="h6">Ether: {balance.toFixed(2)}</Typography>
         </Box>
         <Box
           sx={{
@@ -140,11 +139,11 @@ export default function Wallet({
             borderRadius: "10px",
           }}
         >
-          <Box sx={{ minWidth: 120 }}>
+          <Box sx={{ minWidth: 80 }}>
             <FormControl>
               <InputLabel id="demo-simple-select-label">Currency</InputLabel>
               <Select
-                style={{ width: "300px" }}
+                style={{ width: "305px" }}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={currency}
@@ -158,9 +157,9 @@ export default function Wallet({
           </Box>
 
           {currency === "USD" ? (
-            <Typography variant="h6">USD {balanceUSD}</Typography>
+            <Typography variant="h6">USD: {balanceUSD}</Typography>
           ) : (
-            <Typography variant="h6">EUR {balanceEUR}</Typography>
+            <Typography variant="h6">EUR: {balanceEUR}</Typography>
           )}
         </Box>
       </Box>
