@@ -21,6 +21,8 @@ To get started with the project, follow these instructions:
   - Navigate to the client directory of the project in your terminal.
   - Run `npm start` to start the client.
 
+# Add your etherscan API key in the .env file
+
 # Add valid wallet data
 
 ```0x56Eddb7aa87536c09CCc2793473599fD21A8b17F
